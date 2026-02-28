@@ -9,6 +9,7 @@
 #   - Docker (可选)
 #   - Node.js (可选)
 #   - Git (可选)
+#   - Chrome (可选)
 #
 
 set -e
@@ -248,6 +249,28 @@ install_docker_compose() {
     log_info "Docker Compose 安装完成: $(docker-compose --version)"
 }
 
+# 安装 Chrome 浏览器
+install_chrome() {
+    log_step "安装 Google Chrome..."
+
+    if command -v google-chrome &> /dev/null; then
+        log_warn "Chrome 已安装: $(google-chrome --version)"
+        return
+    fi
+
+    # 添加 Google Chrome GPG key
+    wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome.gpg
+
+    # 添加 Google Chrome 仓库
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
+    # 安装 Chrome
+    apt update
+    apt install -y google-chrome-stable
+
+    log_info "Chrome 安装完成: $(google-chrome --version)"
+}
+
 # 显示使用帮助
 show_help() {
     cat << EOF
@@ -261,6 +284,7 @@ show_help() {
     --docker        仅安装 Docker
     --nodejs        仅安装 Node.js
     --zsh           仅安装 Zsh
+    --chrome        仅安装 Chrome
     --help          显示此帮助信息
 
 示例:
@@ -288,6 +312,7 @@ main() {
     INSTALL_DOCKER=false
     INSTALL_NODEJS=false
     INSTALL_ZSH=false
+    INSTALL_CHROME=false
     
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -316,6 +341,10 @@ main() {
                 ;;
             --zsh)
                 INSTALL_ZSH=true
+                INSTALL_ALL=false
+                ;;
+            --chrome)
+                INSTALL_CHROME=true
                 INSTALL_ALL=false
                 ;;
             --help)
@@ -362,7 +391,11 @@ main() {
     if [ "$INSTALL_ALL" = true ] || [ "$INSTALL_ZSH" = true ]; then
         install_zsh
     fi
-    
+
+    if [ "$INSTALL_ALL" = true ] || [ "$INSTALL_CHROME" = true ]; then
+        install_chrome
+    fi
+
     echo ""
     echo "============================================"
     log_info "开发工具安装完成!"
@@ -375,6 +408,7 @@ main() {
     command -v docker &> /dev/null && echo "  ✓ Docker"
     command -v node &> /dev/null && echo "  ✓ Node.js"
     command -v zsh &> /dev/null && echo "  ✓ Zsh"
+    command -v google-chrome &> /dev/null && echo "  ✓ Chrome"
     echo ""
 }
 
