@@ -1,0 +1,22 @@
+.env
+*.log
+*.retry
+*.bak
+*.swp
+
+# Secrets
+**/secrets/**
+**/*.key
+**/*.pem
+
+# Ansible
+*.retry
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# OS
+.DS_Store
+
