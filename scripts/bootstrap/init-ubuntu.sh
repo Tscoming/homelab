@@ -70,11 +70,23 @@ log "Time sync status: $(timedatectl show-timesync --property=SystemClockSynchro
 ############################################
 # 3. APT mirror
 ############################################
+log "Configuring APT China mirror..."
+
+# If set-apt-cn.sh exists locally, use it; otherwise download from GitHub
 if [[ -x "${SCRIPT_DIR}/set-apt-cn.sh" ]]; then
-  log "Configuring APT China mirror..."
+  log "Using local set-apt-cn.sh..."
   "${SCRIPT_DIR}/set-apt-cn.sh"
 else
-  err "set-apt-cn.sh not found or not executable"
+  log "Downloading set-apt-cn.sh from GitHub..."
+  SET_APT_CN_URL="https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh"
+  SET_APT_CN_TMP="/tmp/set-apt-cn.sh"
+  
+  if ! curl -fsSL "$SET_APT_CN_URL" -o "$SET_APT_CN_TMP"; then
+    err "Failed to download set-apt-cn.sh"
+  fi
+  
+  chmod +x "$SET_APT_CN_TMP"
+  "$SET_APT_CN_TMP"
 fi
 
 ############################################
