@@ -150,5 +150,8 @@ fi
 log "Running apt update..."
 apt update -y
 
+log "Running apt upgrade..."
+apt upgrade -y
+
 log "APT mirror switched successfully ✅"
 

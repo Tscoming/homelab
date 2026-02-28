@@ -76,36 +76,73 @@ git clone https://github.com/Tscoming/homelab.git
 cd homelab
 ```
 
-### 2️⃣ 初始化全新 Ubuntu 系统
-
-#### 方式一：克隆仓库后执行
+### 2️⃣ 初始化 Ubuntu 系统（可选）
 
 ```bash
-git clone https://github.com/Tscoming/homelab.git
-cd homelab
-chmod +x scripts/bootstrap/*.sh
+# 方式一：克隆仓库后执行
 sudo scripts/bootstrap/init-ubuntu.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/init-ubuntu.sh | sudo bash
 ```
 
-#### 方式二：直接从仓库执行（无需克隆）
+此脚本执行以下操作：
+- 安装基础工具包（curl, wget, git, vim, htop, tmux 等）
+- 配置时区为 Asia/Shanghai 和 NTP 时间同步
+- 自动切换 APT 为国内镜像（阿里云/腾讯云）
+- 系统调优（文件描述符、网络参数等）
+- SSH 基础加固
+
+> ⚠️ 首次在新机器上运行时建议执行此脚本
+
+### 3️⃣ 安装 Docker
 
 ```bash
-# 方式 A：执行初始化脚本
-curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/init-ubuntu.sh | sudo bash
+# 方式一：克隆仓库后执行
+sudo scripts/bootstrap/install-docker.sh
 
-# 方式 B：切换 APT 为国内镜像
-curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh | sudo bash
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/install-docker.sh | sudo bash
 ```
 
-这将执行以下操作：
+可选参数：
+```bash
+# 使用官方镜像（默认使用国内镜像）
+USE_CHINA_MIRROR=false sudo scripts/bootstrap/install-docker.sh
 
-- 切换 APT 为国内镜像源
-- 安装基础系统包
-- 应用基础系统调优
-- 配置时区和 NTP
-- 执行安全的 SSH 配置
+# 指定 Docker 版本
+DOCKER_VERSION=24.0 sudo scripts/bootstrap/install-docker.sh
 
-### 3️⃣ 对 lab 环境运行 Ansible
+# 跳过配置，仅安装
+SKIP_CONFIG=true sudo scripts/bootstrap/install-docker.sh
+```
+
+### 4️⃣ 安装 Node.js
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/bootstrap/install-nodejs.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/install-nodejs.sh | sudo bash
+```
+
+可选参数：
+```bash
+# 安装 Node.js 18.x（默认 22.x）
+NODE_VERSION=18 sudo scripts/bootstrap/install-nodejs.sh
+
+# 使用官方 npm 镜像
+USE_CHINA_MIRROR=false sudo scripts/bootstrap/install-nodejs.sh
+
+# 不安装 pnpm
+INSTALL_PNPM=false sudo scripts/bootstrap/install-nodejs.sh
+
+# 安装 yarn
+INSTALL_YARN=true sudo scripts/bootstrap/install-nodejs.sh
+```
+
+### 5️⃣ 对 lab 环境运行 Ansible
 
 ```bash
 cd ansible
@@ -116,10 +153,44 @@ ansible-playbook -i ../inventory/lab/hosts.yaml playbooks/bootstrap.yml
 
 ## 🧰 常用操作
 
+### ▶ 初始化 Ubuntu 系统
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/bootstrap/init-ubuntu.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/init-ubuntu.sh | sudo bash
+```
+
+### ▶ 安装 Docker
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/bootstrap/install-docker.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/install-docker.sh | sudo bash
+```
+
+### ▶ 安装 Node.js
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/bootstrap/install-nodejs.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/install-nodejs.sh | sudo bash
+```
+
 ### ▶ 切换 APT 为国内镜像
 
 ```bash
+# 方式一：克隆仓库后执行
 sudo scripts/bootstrap/set-apt-cn.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh | sudo bash
 ```
 
 ### ▶ 部署 Docker Compose 栈
