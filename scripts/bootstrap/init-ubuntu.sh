@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# set -euo pipefail
 
 ############################################
 # init-ubuntu.sh
@@ -21,8 +21,51 @@ err() {
 
 log "Starting Ubuntu initialization..."
 
+# Restore official Ubuntu mirrors first (in case previous run left broken mirrors)
+log "Restoring official Ubuntu mirrors..."
+CODENAME="$(lsb_release -cs)"
+cat > /etc/apt/sources.list <<EOF
+deb http://archive.ubuntu.com/ubuntu/ ${CODENAME} main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ ${CODENAME}-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ ${CODENAME}-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu ${CODENAME}-security main restricted universe multiverse
+EOF
+
+# Update APT cache with official mirrors
+log "Updating APT cache..."
+apt update -y
+
 ############################################
-# 1. Base packages (lsb-release required for set-apt-cn.sh)
+# 1. Install required packages (lsb-release required for set-apt-cn.sh)
+############################################
+log "Installing required packages..."
+
+apt install -y lsb-release curl wget
+
+############################################
+# 2. APT mirror (must be BEFORE installing base packages)
+############################################
+log "Configuring APT China mirror..."
+
+# If set-apt-cn.sh exists locally, use it; otherwise download from GitHub
+if [[ -x "${SCRIPT_DIR}/set-apt-cn.sh" ]]; then
+  log "Using local set-apt-cn.sh..."
+  "${SCRIPT_DIR}/set-apt-cn.sh"
+else
+  log "Downloading set-apt-cn.sh from GitHub..."
+  SET_APT_CN_URL="https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh"
+  SET_APT_CN_TMP="/tmp/set-apt-cn.sh"
+
+  if ! curl -fsSL "$SET_APT_CN_URL" -o "$SET_APT_CN_TMP"; then
+    err "Failed to download set-apt-cn.sh"
+  fi
+
+  chmod +x "$SET_APT_CN_TMP"
+  "$SET_APT_CN_TMP"
+fi
+
+############################################
+# 3. Base packages
 ############################################
 log "Installing base packages..."
 
@@ -46,7 +89,7 @@ apt install -y \
   jq
 
 ############################################
-# 2. Timezone & time sync (must be BEFORE APT mirror config)
+# 4. Timezone & time sync
 ############################################
 log "Configuring timezone and NTP..."
 
@@ -68,29 +111,7 @@ sleep 2
 log "Time sync status: $(timedatectl show-timesync --property=SystemClockSynchronized --value)"
 
 ############################################
-# 3. APT mirror
-############################################
-log "Configuring APT China mirror..."
-
-# If set-apt-cn.sh exists locally, use it; otherwise download from GitHub
-if [[ -x "${SCRIPT_DIR}/set-apt-cn.sh" ]]; then
-  log "Using local set-apt-cn.sh..."
-  "${SCRIPT_DIR}/set-apt-cn.sh"
-else
-  log "Downloading set-apt-cn.sh from GitHub..."
-  SET_APT_CN_URL="https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh"
-  SET_APT_CN_TMP="/tmp/set-apt-cn.sh"
-  
-  if ! curl -fsSL "$SET_APT_CN_URL" -o "$SET_APT_CN_TMP"; then
-    err "Failed to download set-apt-cn.sh"
-  fi
-  
-  chmod +x "$SET_APT_CN_TMP"
-  "$SET_APT_CN_TMP"
-fi
-
-############################################
-# 4. System tuning
+# 5. System tuning
 ############################################
 log "Applying system tuning..."
 
@@ -110,7 +131,7 @@ EOF
 sysctl --system >/dev/null
 
 ############################################
-# 5. SSH hardening (minimal & safe)
+# 6. SSH hardening (minimal & safe)
 ############################################
 log "Configuring SSH..."
 
@@ -135,7 +156,7 @@ EOF
 systemctl reload sshd 2>/dev/null || systemctl reload ssh 2>/dev/null || true
 
 ############################################
-# 6. Clean up
+# 7. Clean up
 ############################################
 log "Cleaning up..."
 apt autoremove -y
