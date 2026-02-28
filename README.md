@@ -193,6 +193,25 @@ sudo scripts/bootstrap/set-apt-cn.sh
 curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/bootstrap/set-apt-cn.sh | sudo bash
 ```
 
+### ▶ 安装网络远程访问工具
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/network/install-remote-access.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/network/install-remote-access.sh | sudo bash
+```
+
+可选参数：
+```bash
+# 仅安装 Rustdesk
+sudo scripts/network/install-remote-access.sh --no-tailscale
+
+# 仅安装 Tailscale
+sudo scripts/network/install-remote-access.sh --no-rustdesk
+```
+
 ### ▶ 部署 Docker Compose 栈
 
 ```bash
