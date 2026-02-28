@@ -114,6 +114,15 @@ sysctl --system >/dev/null
 ############################################
 log "Configuring SSH..."
 
+# Install openssh-server if not present
+if ! command -v sshd &>/dev/null; then
+  log "Installing openssh-server..."
+  apt install -y openssh-server
+fi
+
+# Ensure sshd_config.d directory exists
+mkdir -p /etc/ssh/sshd_config.d
+
 SSHD_CONF="/etc/ssh/sshd_config.d/homelab.conf"
 
 cat > "$SSHD_CONF" <<EOF
