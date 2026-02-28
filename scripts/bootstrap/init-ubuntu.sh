@@ -19,29 +19,6 @@ err() {
 
 [[ $EUID -ne 0 ]] && err "Please run as root"
 
-log "Starting Ubuntu initialization..."
-
-# Restore official Ubuntu mirrors first (in case previous run left broken mirrors)
-log "Restoring official Ubuntu mirrors..."
-CODENAME="$(lsb_release -cs)"
-cat > /etc/apt/sources.list <<EOF
-deb http://archive.ubuntu.com/ubuntu/ ${CODENAME} main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ ${CODENAME}-updates main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ ${CODENAME}-backports main restricted universe multiverse
-deb http://security.ubuntu.com/ubuntu ${CODENAME}-security main restricted universe multiverse
-EOF
-
-# Update APT cache with official mirrors
-log "Updating APT cache..."
-apt update -y
-
-############################################
-# 1. Install required packages (lsb-release required for set-apt-cn.sh)
-############################################
-log "Installing required packages..."
-
-apt install -y lsb-release curl wget
-
 ############################################
 # 2. APT mirror (must be BEFORE installing base packages)
 ############################################
