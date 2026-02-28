@@ -142,7 +142,52 @@ INSTALL_PNPM=false sudo scripts/bootstrap/install-nodejs.sh
 INSTALL_YARN=true sudo scripts/bootstrap/install-nodejs.sh
 ```
 
-### 5️⃣ 对 lab 环境运行 Ansible
+### 5️⃣ 安装开发工具
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/utils/install-dev-tools.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/utils/install-dev-tools.sh | sudo bash
+```
+
+可选参数：
+```bash
+# 安装所有工具（默认）
+sudo scripts/utils/install-dev-tools.sh --all
+
+# 仅安装 VSCode
+sudo scripts/utils/install-dev-tools.sh --vscode
+
+# 仅安装 Postman
+sudo scripts/utils/install-dev-tools.sh --postman
+
+# 仅安装 Conda
+sudo scripts/utils/install-dev-tools.sh --conda
+
+# 仅安装 Docker
+sudo scripts/utils/install-dev-tools.sh --docker
+
+# 仅安装 Node.js
+sudo scripts/utils/install-dev-tools.sh --nodejs
+
+# 仅安装 Zsh
+sudo scripts/utils/install-dev-tools.sh --zsh
+
+# 安装多个工具
+sudo scripts/utils/install-dev-tools.sh --vscode --postman
+```
+
+此脚本执行以下操作：
+- 安装 VSCode (Visual Studio Code)
+- 安装 Postman
+- 安装 Conda (Miniconda)
+- 安装 Docker 和 Docker Compose
+- 安装 Node.js
+- 安装 Zsh 和 Oh My Zsh
+
+### 6️⃣ 对 lab 环境运行 Ansible
 
 ```bash
 cd ansible
@@ -210,6 +255,34 @@ sudo scripts/network/install-remote-access.sh --no-tailscale
 
 # 仅安装 Tailscale
 sudo scripts/network/install-remote-access.sh --no-rustdesk
+```
+
+### ▶ 安装开发工具
+
+```bash
+# 方式一：克隆仓库后执行
+sudo scripts/utils/install-dev-tools.sh
+
+# 方式二：直接远程执行（无需克隆）
+curl -fsSL https://raw.githubusercontent.com/Tscoming/homelab/main/scripts/utils/install-dev-tools.sh | sudo bash
+```
+
+可选参数：
+```bash
+# 安装所有工具（默认）
+sudo scripts/utils/install-dev-tools.sh --all
+
+# 仅安装 VSCode
+sudo scripts/utils/install-dev-tools.sh --vscode
+
+# 仅安装 Postman
+sudo scripts/utils/install-dev-tools.sh --postman
+
+# 仅安装 Conda
+sudo scripts/utils/install-dev-tools.sh --conda
+
+# 安装多个工具
+sudo scripts/utils/install-dev-tools.sh --vscode --postman
 ```
 
 ### ▶ 部署 Docker Compose 栈
