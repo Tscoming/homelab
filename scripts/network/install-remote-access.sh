@@ -126,7 +126,7 @@ if [[ "$INSTALL_RUSTDESK" == "true" ]]; then
   ARCH=$(dpkg --print-architecture)
   case $ARCH in
     amd64)
-      RUSTDESK_DEB="rustdesk-${RUSTDESK_VERSION}-x86_64-sciter.deb"
+      RUSTDESK_DEB="rustdesk-${RUSTDESK_VERSION}-x86_64.deb"
       ;;
     arm64)
       RUSTDESK_DEB="rustdesk-${RUSTDESK_VERSION}-aarch64.deb"

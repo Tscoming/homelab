@@ -175,6 +175,9 @@ sudo scripts/utils/install-dev-tools.sh --nodejs
 # 仅安装 Zsh
 sudo scripts/utils/install-dev-tools.sh --zsh
 
+# 仅安装 Chrome
+sudo scripts/utils/install-dev-tools.sh --chrome
+
 # 安装多个工具
 sudo scripts/utils/install-dev-tools.sh --vscode --postman
 ```
@@ -186,6 +189,7 @@ sudo scripts/utils/install-dev-tools.sh --vscode --postman
 - 安装 Docker 和 Docker Compose
 - 安装 Node.js
 - 安装 Zsh 和 Oh My Zsh
+- 安装 Chrome 浏览器
 
 ### 6️⃣ 对 lab 环境运行 Ansible
 
@@ -280,6 +284,9 @@ sudo scripts/utils/install-dev-tools.sh --postman
 
 # 仅安装 Conda
 sudo scripts/utils/install-dev-tools.sh --conda
+
+# 仅安装 Chrome
+sudo scripts/utils/install-dev-tools.sh --chrome
 
 # 安装多个工具
 sudo scripts/utils/install-dev-tools.sh --vscode --postman
