@@ -46,7 +46,29 @@ apt install -y \
   jq
 
 ############################################
-# 2. APT mirror
+# 2. Timezone & time sync (must be BEFORE APT mirror config)
+############################################
+log "Configuring timezone and NTP..."
+
+timedatectl set-timezone Asia/Shanghai
+
+# Use Chinese NTP servers for better performance
+cat > /etc/systemd/timesyncd.conf <<EOF
+[Time]
+NTP=ntp.aliyun.com ntp.tencent.com
+FallbackNTP=ntp.ntsc.ac.cn
+EOF
+
+systemctl enable systemd-timesyncd
+systemctl start systemd-timesyncd
+
+# Wait briefly for time sync
+sleep 2
+
+log "Time sync status: $(timedatectl show-timesync --property=SystemClockSynchronized --value)"
+
+############################################
+# 3. APT mirror
 ############################################
 if [[ -x "${SCRIPT_DIR}/set-apt-cn.sh" ]]; then
   log "Configuring APT China mirror..."
@@ -56,7 +78,7 @@ else
 fi
 
 ############################################
-# 3. System tuning
+# 4. System tuning
 ############################################
 log "Applying system tuning..."
 
@@ -74,14 +96,6 @@ net.core.somaxconn = 65535
 EOF
 
 sysctl --system >/dev/null
-
-############################################
-# 4. Timezone & time sync
-############################################
-log "Configuring timezone and NTP..."
-
-timedatectl set-timezone Asia/Shanghai
-timedatectl set-ntp true
 
 ############################################
 # 5. SSH hardening (minimal & safe)
