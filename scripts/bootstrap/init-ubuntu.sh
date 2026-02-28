@@ -80,7 +80,7 @@ FallbackNTP=ntp.ntsc.ac.cn
 EOF
 
 systemctl enable systemd-timesyncd
-systemctl start systemd-timesyncd
+systemctl restart systemd-timesyncd
 
 # Wait briefly for time sync
 sleep 2
